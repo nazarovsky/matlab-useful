@@ -1,13 +1,36 @@
 /*==========================================================
  * mex_delta_fast_spline_interp.cpp 
- * 10.06.2014 16:08 Nazarovsky A.E.
+ * 27.06.2014 16:05 Nazarovsky A.E.
  *		
- * Compilation: mex mex_spline_interp.cpp  tested in Microsoft Visual Studio 2010
+ * Compilation: mex mex_delta_fast_spline_interp.cpp  tested in Microsoft Visual Studio 2010
  * don't forget to setup compiler in MATLAB using mex - setup
- * "spline.h" should be in current directory
+ *
  * This is a MEX-file for MATLAB.
  * Copyright 1984-2009 The MathWorks, Inc.
  *
+ * 
+ * USAGE:
+ * fast spline resampling of 1d equally spaced data points
+ * 
+ * y1=mex_delta_fast_spline_interp(x_beg, x_end, x1_beg, x1_end, y, N , M);
+ *
+ *  input data - N equally spaced points from "x_beg" to "x_end" with corresponding values in "y" array
+ *  output data - M equally spaced points from "x1_beg" to "x1_end" with corresponding values in "y1" array
+ *
+ *  x_beg	N points			  x_end                   
+ *   *-----*-----*-----*-----* .........  *-----*
+ *
+ *    x1_beg         M points                 x1_end          (x1_beg>=x_beg , x1_end<=x_end)
+ *     *----*----*----*----*----* .......*----*
+ * Input:
+ *        x_beg, x_end  - first and last points of the input x grid 
+ *        N - number of points in the input grid
+ *        y - values in the points of the input grid (should be sorted to correspond with x grid)
+ *        x1_beg, x1_end - first and last points of the output x1 grid 
+ *        M - number of points in the output grid
+ * Output: 
+ *        y1 - interpolated values         
+
  *========================================================*/
 /* $Revision: 1.5.4.4 $ */
 
