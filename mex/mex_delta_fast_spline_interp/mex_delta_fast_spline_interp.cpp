@@ -97,7 +97,6 @@ void delta_fast_spline_interp(double *y1,  float x_beg, float x_end, float x1_be
 
 	//////////////////////////////////////////   actual resampling part
    
-//	int p=0; // pivot for x array
 	int p1=0; // pivot for x1 array
 	float xx=0.0,yy=0.0;
 	int ll=0,mm=0;
@@ -112,19 +111,17 @@ void delta_fast_spline_interp(double *y1,  float x_beg, float x_end, float x1_be
 		while (p1<M) {
 
 			xx=(px1-x_beg)/h;
-            ll = xx + 1 ;
+                        ll = xx + 1 ;
 			mm = MIN(ll+3,N+2);
 			yy=0.0;
 			for (kk=ll; kk<=mm; kk++){
 			   yy+=C[kk-1]*spline_phi(xx-kk+2);
-		    }
+		        }
 			y1[p1]=yy;
-
 			p1++;
 			px+=h;  px1=x1_beg+p1*h1;
 			if (px1<px){
-					   px-=h;
-
+	  		   px-=h;
 			};
 		};
 	} else  //size of x1 < size of x
@@ -136,14 +133,14 @@ void delta_fast_spline_interp(double *y1,  float x_beg, float x_end, float x1_be
 			mm = MIN(ll+3,N+2);
 			   yy=0.0;
 			   for (kk=ll; kk<=mm; kk++){
-				   yy+=C[kk-1]*spline_phi(xx-kk+2);
+			      yy+=C[kk-1]*spline_phi(xx-kk+2);
 			   }
 			   y1[p1]=yy;
 			   p1++;
 			   px+=h;
-               px1=x1_beg+p1*h1;
+                           px1=x1_beg+p1*h1;
 			   if (px1>px){
-				   px+=h;
+			      px+=h;
 			   };
 		}; 
 	};
@@ -166,32 +163,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
   /* Check for proper number of arguments */
 
   if (nrhs != 7) {
-    mexErrMsgIdAndTxt("MATLAB:mex_fast_spline_interp:nargin", 
-            "mex_fast_spline_interp_double requires 7 input arguments:\n y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n ");
+    mexErrMsgIdAndTxt("MATLAB:mex_delta_fast_spline_interp:nargin", 
+            "mex_delta_fast_spline_interp_double requires 7 input arguments:\n y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n ");
   } else if (nlhs > 1) {
-    mexErrMsgIdAndTxt("MATLAB:mex_fast_spline_interp:nargout",
-            "mex_fast_spline_interp requires 1 output argument:\n  y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n   ");
+    mexErrMsgIdAndTxt("MATLAB:mex_delta_fast_spline_interp:nargout",
+            "mex_delta_fast_spline_interp requires 1 output argument:\n  y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n   ");
   }
-
-
-/*     /* make sure the first input argument is type double */
-//    if( !mxIsDouble(prhs[0]) || 
-//         mxIsComplex(prhs[0])) {
-//        mexErrMsgIdAndTxt("MATLAB:mex_fast_spline_interp:notDouble1","Input matrix 1 must be type double.");
-//    }
-
-    /* make sure the second input argument is type double */
-//    if( !mxIsDouble(prhs[1]) || 
-//         mxIsComplex(prhs[1])) {
-//        mexErrMsgIdAndTxt("MATLAB:mex_fast_spline_interp:notDouble2","Input matrix 2 must be type double.");
-//    }
-
-    /* make sure the third input argument is type double */
-//    if( !mxIsDouble(prhs[2]) || 
-//         mxIsComplex(prhs[2])) {
-//        mexErrMsgIdAndTxt("MATLAB:mex_fast_spline_interp:notDouble3","Input matrix 3 must be type double.");
-//    }
-
 
     x_beg = mxGetScalar(prhs[0]);
     x_end = mxGetScalar(prhs[1]);
@@ -202,13 +179,6 @@ void mexFunction( int nlhs, mxArray *plhs[],
     M = mxGetScalar(prhs[6]);
 
     C = (float *) mxMalloc( (int)(N+3)*sizeof(float) );
-    /* get dimensions of the input matrices */
-
-    /* check if lengths of the input vectors t_before_interp and Yvalues are not equal */
-//    if( n_t_before_interp!=n_Yvalues) {
-//        mexErrMsgIdAndTxt("MATLAB:mex_spline_interp:difflengths","Different lengths of t_before_interp and Yvalues.");
-//    }
-
     /* create the output matrix */
     plhs[0] = mxCreateDoubleMatrix(1,(mwSize)M,mxREAL);
     /* get a pointer to the real data in the output matrix */
