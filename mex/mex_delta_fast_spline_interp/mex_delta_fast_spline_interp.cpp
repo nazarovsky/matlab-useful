@@ -187,7 +187,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
   if (nrhs != 7) {
     mexErrMsgIdAndTxt("MATLAB:mex_delta_fast_spline_interp:nargin", 
-            "mex_delta_fast_spline_interp_double requires 7 input arguments:\n y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n ");
+            "mex_delta_fast_spline_interp requires 7 input arguments:\n y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n ");
   } else if (nlhs > 1) {
     mexErrMsgIdAndTxt("MATLAB:mex_delta_fast_spline_interp:nargout",
             "mex_delta_fast_spline_interp requires 1 output argument:\n  y1=f(x_beg, x_end, x1_beg, x1_end, y, N, M) \n   ");
