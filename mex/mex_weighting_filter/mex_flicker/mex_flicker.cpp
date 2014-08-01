@@ -17,12 +17,8 @@ extern void _main();
 void call_filter(double *Y,  double *X, int N )
 {
     int k;
-    float x;
-    float y;
     for (k=0;k<N;k++){
-                x=X[k];
-		y=filter(x);
-		Y[k]=y;
+		Y[k]=filter(X[k]);
 	}
 }
 

@@ -111,48 +111,37 @@ end;
 fprintf(fid,'\n');
 fprintf(fid,'FloatType filter(FloatType x) {\n');
 for k=1:STAGES
-    fprintf(fid,'\n');
     if (k==1)
         if (GAINS(k)==1)
-           fprintf(fid,'   x1=x;\n');
+           fprintf(fid,'x1=x;\n');
         else
-           fprintf(fid,'   x1=g1*x;\n');
+           fprintf(fid,'x1=g1*x;\n');
         end;
     else
         if (GAINS(k)==1)
-           fprintf(fid,'   x%d=y0%d;\n',k,k-1);
+           fprintf(fid,'x%d=y0%d;\n',k,k-1);
         else
-           fprintf(fid,'   x%d=g%d*y0%d;\n',k,k,k-1);
+           fprintf(fid,'x%d=g%d*y0%d;\n',k,k,k-1);
         end;
     end;
     
     if(COEFS(k,1)==1) % b0=1
-       fprintf(fid,'    y0%d  =     x%d + z%d1; \n',k,k,k);
+       fprintf(fid,' y0%d  =     x%d + z%d1; \n',k,k,k);
     else
-       fprintf(fid,'    y0%d  = b%d0*x%d + z%d1; \n',k,k,k,k);
+       fprintf(fid,' y0%d  = b%d0*x%d + z%d1; \n',k,k,k,k);
     end;
     
-    switch COEFS(k,2) % b1
-        case 1
-            fprintf(fid,'    z%d1  =     x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k);
-        case 2
-            fprintf(fid,'    z%d1  = x%d +x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);            
-        case -1
-            fprintf(fid,'    z%d1  =    -x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k);            
-        case -2
-            fprintf(fid,'    z%d1  = -x%d -x%d+ z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);            
-        otherwise
-            fprintf(fid,'    z%d1  = b%d1*x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);
-    end;
+    if(COEFS(k,1)==1) % b1=1
+    fprintf(fid,' z%d1  = b%d1*x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);
     
     if(COEFS(k,3)==1) % b2=1
-       fprintf(fid,'    z%d2  =     x%d       - a%d2*y0%d; \n',k,k,k,k);
+       fprintf(fid,' z%d2  =     x%d       - a%d2*y0%d; \n',k,k,k,k);
     else
-       fprintf(fid,'    z%d2  = b%d2*x%d       - a%d2*y0%d; \n',k,k,k,k,k); 
+       fprintf(fid,' z%d2  = b%d2*x%d       - a%d2*y0%d; \n',k,k,k,k,k); 
     end
     fprintf(fid,'\n');
 end;
-fprintf(fid,'   return y0%d;\n',k);
+fprintf(fid,'return y0%d;\n',k);
 fprintf(fid,'}\n');
 fclose(fid);
 
@@ -170,8 +159,3 @@ FX1=mex_flicker(X);
 plot(FX); hold on;plot(FX1,'r'); 
 disp(['error = ' num2str(sum((FX-FX1).^2))]);
 clear mex_flicker; % unload from memory and unblock file on disk
-
-system('mex mex_flicker\mex_weighting_filter.cpp'); % compile final version of filters
-system('copy mex_weighting_filter.mexw64 mex_weighting_filterA.mexw64'); 
-system('copy mex_weighting_filter.mexw64 mex_weighting_filterB.mexw64'); 
-system('copy mex_weighting_filter.mexw64 mex_weighting_filterC.mexw64'); 
