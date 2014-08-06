@@ -1,19 +1,19 @@
 typedef float FloatType;
-const FloatType g1=9.99877296594326560e-01f;const FloatType a11=-9.99754593188653010e-01f;const FloatType a12=0.00000000000000000e+00f;const FloatType b11=-1.00000000000000000e+00f;const FloatType b12=0.00000000000000000e+00f;
-FloatType z11=0.0f;FloatType z12=0.0f;
-FloatType x1=0.0f;FloatType y01=0.0f;
-const FloatType g2=2.92482051101833750e-07f;const FloatType a21=-1.69126559727537810e+00f;const FloatType a22=7.16537069870652800e-01f;const FloatType b21=2.00000000000000000e+00f;FloatType z21=0.0f;FloatType z22=0.0f;
-FloatType x2=0.0f;FloatType y02=0.0f;
-const FloatType a31=-1.75803000680228360e+00f;const FloatType a32=7.84299096181354520e-01f;const FloatType b31=2.00000000000000000e+00f;FloatType z31=0.0f;FloatType z32=0.0f;
-FloatType x3=0.0f;FloatType y03=0.0f;
-const FloatType a41=-1.88705644727826140e+00f;const FloatType a42=9.15253494134742770e-01f;const FloatType b41=2.00000000000000000e+00f;FloatType z41=0.0f;FloatType z42=0.0f;
-FloatType x4=0.0f;FloatType y04=0.0f;
-const FloatType g5=1.05800499393515770e-03f;const FloatType a51=-1.89198526823119820e+00f;const FloatType a52=8.92597057752947070e-01f;const FloatType b51=2.00000000000299320e+00f;const FloatType b52=9.99999999997980730e-01f;
-FloatType z51=0.0f;FloatType z52=0.0f;
-FloatType x5=0.0f;FloatType y05=0.0f;
-const FloatType a61=-1.95896192484015490e+00f;const FloatType a62=9.60941017483742390e-01f;const FloatType b61=-1.98887137662339080e+00f;const FloatType b62=9.88871376623233320e-01f;
-FloatType z61=0.0f;FloatType z62=0.0f;
-FloatType x6=0.0f;FloatType y06=0.0f;
+const FloatType g1=9.99877296594326560e-01;const FloatType a11=-9.99754593188653010e-01;const FloatType a12=0.00000000000000000e+00;const FloatType b11=-1.00000000000000000e+00;const FloatType b12=0.00000000000000000e+00;
+FloatType z11=0.0;FloatType z12=0.0;
+FloatType x1=0.0;FloatType y01=0.0;
+const FloatType g2=2.92482051101833750e-07;const FloatType a21=-1.69126559727537810e+00;const FloatType a22=7.16537069870652800e-01;const FloatType b21=2.00000000000000000e+00;FloatType z21=0.0;FloatType z22=0.0;
+FloatType x2=0.0;FloatType y02=0.0;
+const FloatType a31=-1.75803000680228360e+00;const FloatType a32=7.84299096181354520e-01;const FloatType b31=2.00000000000000000e+00;FloatType z31=0.0;FloatType z32=0.0;
+FloatType x3=0.0;FloatType y03=0.0;
+const FloatType a41=-1.88705644727826140e+00;const FloatType a42=9.15253494134742770e-01;const FloatType b41=2.00000000000000000e+00;FloatType z41=0.0;FloatType z42=0.0;
+FloatType x4=0.0;FloatType y04=0.0;
+const FloatType g5=1.05800499393515770e-03;const FloatType a51=-1.89198526823119820e+00;const FloatType a52=8.92597057752947070e-01;const FloatType b51=2.00000000000299320e+00;const FloatType b52=9.99999999997980730e-01;
+FloatType z51=0.0;FloatType z52=0.0;
+FloatType x5=0.0;FloatType y05=0.0;
+const FloatType a61=-1.95896192484015490e+00;const FloatType a62=9.60941017483742390e-01;const FloatType b61=-1.98887137662339080e+00;const FloatType b62=9.88871376623233320e-01;
+FloatType z61=0.0;FloatType z62=0.0;
+FloatType x6=0.0;FloatType y06=0.0;
 
 FloatType filter(FloatType x) {
 

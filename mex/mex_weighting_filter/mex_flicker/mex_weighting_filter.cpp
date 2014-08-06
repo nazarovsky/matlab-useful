@@ -19,33 +19,15 @@ extern void _main();
 
 #define SCALING_FACTOR  1238354 // SCALING CONSTANT found according to 50 Hz signal with sine modulation , mod.depth=0.25% and mod.freq=8.8 Hz - result should be = 1
 #define M_PI 3.14159265358979323
-#define NN 1280
 
-
-//	{0.001058004993935,   0.000011774139111,  -0.002104235848771,  -0.000011774139101,   0.001046230854825};
-// static float z_w[]={0,0,0,0}; // 5-1
-
-// lowpass Butterworth = 2
-static float a_lp[]={ 1.000000000000000,  -0.997399218298034};
-static float b_lp[]={ 1e-3*1.300390850982880,   1e-3*1.300390850982880};
-static float z_lp[1]; // 2-1
 
 #include "filter.h"
-
-
-float lp_filter(float x) {
-// returns one filtered value and updates internal "delayed" values
-   float y;
-   y	   =  b_lp[0] * x + z_lp[0];
-   z_lp[0] =  b_lp[1] * x - a_lp[1]*y;
-   return y;
-}
-
+#include "lpfilter.h"
 
 void call_filter(double *Y,  double *X, int N )
 {
     int k;
-    float y;
+    double y;
     for (k=0;k<N;k++){
 		y = X[k];
 		y = y*y ;         // squaring [block 2]
