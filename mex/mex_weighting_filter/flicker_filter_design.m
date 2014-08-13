@@ -4,7 +4,8 @@ clear all; clc;
 % then produces c code, compiles it to mex-function
 % and compares results with matlab filter
 % [added part 2 - sumulation of flickermeter work]
-% Nazarovsky A.E. 05.08.2014 11:35
+% [added picture export and legend in the generated code
+% Nazarovsky A.E. 13.08.2014 16:56
 %
 SAMPLING_FREQUENCY=12800; % basic measurement sampling frequency
 FL_DECIMATE_FACTOR=10; % decimation factor 
@@ -101,7 +102,8 @@ STAGES=6;
 
 fname='mex_flicker\filter.h';
 fid = fopen(fname, 'w');
-fprintf(fid,'typedef %s FloatType;\n',FLTYPE);
+fprintf(fid,'// designed filter for block 3 for %s\r\n',LAMPTYPE);
+fprintf(fid,'typedef %s FloatType;\r\n',FLTYPE);
 
 for k=1:STAGES
     g0=GAINS(k);
@@ -132,58 +134,58 @@ for k=1:STAGES
        fprintf(fid,'const FloatType b%d1=%1.17e;',k,b1);
     end;
     if (b2~=1)
-       fprintf(fid,'const FloatType b%d2=%1.17e;\n',k,b2);
+       fprintf(fid,'const FloatType b%d2=%1.17e;\r\n',k,b2);
     end;
     
-    fprintf(fid,'FloatType z%d1=0.0;',k);    fprintf(fid,'FloatType z%d2=0.0;\n',k);
-    fprintf(fid,'FloatType x%d=0.0;',k);    fprintf(fid,'FloatType y0%d=0.0;\n',k);
+    fprintf(fid,'FloatType z%d1=0.0;',k);    fprintf(fid,'FloatType z%d2=0.0;\r\n',k);
+    fprintf(fid,'FloatType x%d=0.0;',k);    fprintf(fid,'FloatType y0%d=0.0;\r\n',k);
 end;
-fprintf(fid,'\n');
-fprintf(fid,'FloatType filter(FloatType x) {\n');
+fprintf(fid,'\r\n');
+fprintf(fid,'FloatType filter(FloatType x) {\r\n');
 for k=1:STAGES
-    fprintf(fid,'\n');
+    fprintf(fid,'\r\n');
     if (k==1)
         if (GAINS(k)==1)
-           fprintf(fid,'   x1=x;\n');
+           fprintf(fid,'   x1=x;\r\n');
         else
-           fprintf(fid,'   x1=g1*x;\n');
+           fprintf(fid,'   x1=g1*x;\r\n');
         end;
     else
         if (GAINS(k)==1)
-           fprintf(fid,'   x%d=y0%d;\n',k,k-1);
+           fprintf(fid,'   x%d=y0%d;\r\n',k,k-1);
         else
-           fprintf(fid,'   x%d=g%d*y0%d;\n',k,k,k-1);
+           fprintf(fid,'   x%d=g%d*y0%d;\r\n',k,k,k-1);
         end;
     end;
     
     if(COEFS(k,1)==1) % b0=1
-       fprintf(fid,'    y0%d  =     x%d + z%d1; \n',k,k,k);
+       fprintf(fid,'    y0%d  =     x%d + z%d1; \r\n',k,k,k);
     else
-       fprintf(fid,'    y0%d  = b%d0*x%d + z%d1; \n',k,k,k,k);
+       fprintf(fid,'    y0%d  = b%d0*x%d + z%d1; \r\n',k,k,k,k);
     end;
     
     switch COEFS(k,2) % b1
         case 1
-            fprintf(fid,'    z%d1  =     x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k);
+            fprintf(fid,'    z%d1  =     x%d + z%d2 - a%d1*y0%d; \r\n',k,k,k,k,k);
         case 2
-            fprintf(fid,'    z%d1  = x%d +x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);            
+            fprintf(fid,'    z%d1  = x%d +x%d + z%d2 - a%d1*y0%d; \r\n',k,k,k,k,k,k);            
         case -1
-            fprintf(fid,'    z%d1  =    -x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k);            
+            fprintf(fid,'    z%d1  =    -x%d + z%d2 - a%d1*y0%d; \r\n',k,k,k,k,k);            
         case -2
-            fprintf(fid,'    z%d1  = -x%d -x%d+ z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);            
+            fprintf(fid,'    z%d1  = -x%d -x%d+ z%d2 - a%d1*y0%d; \r\n',k,k,k,k,k,k);            
         otherwise
-            fprintf(fid,'    z%d1  = b%d1*x%d + z%d2 - a%d1*y0%d; \n',k,k,k,k,k,k);
+            fprintf(fid,'    z%d1  = b%d1*x%d + z%d2 - a%d1*y0%d; \r\n',k,k,k,k,k,k);
     end;
     
     if(COEFS(k,3)==1) % b2=1
-       fprintf(fid,'    z%d2  =     x%d       - a%d2*y0%d; \n',k,k,k,k);
+       fprintf(fid,'    z%d2  =     x%d       - a%d2*y0%d; \r\n',k,k,k,k);
     else
-       fprintf(fid,'    z%d2  = b%d2*x%d       - a%d2*y0%d; \n',k,k,k,k,k); 
+       fprintf(fid,'    z%d2  = b%d2*x%d       - a%d2*y0%d; \r\n',k,k,k,k,k); 
     end
-    fprintf(fid,'\n');
+    fprintf(fid,'\r\n');
 end;
-fprintf(fid,'   return y0%d;\n',k);
-fprintf(fid,'}\n');
+fprintf(fid,'   return y0%d;\r\n',k);
+fprintf(fid,'}\r\n');
 fclose(fid);
 
 
@@ -193,18 +195,18 @@ LOWPASS_2_CUTOFF = 1 / (2 * pi * 300e-3);  % time constant 300 msec
 [b_lp, a_lp] = butter(LOWPASS_2_ORDER, LOWPASS_2_CUTOFF / (fs2 / 2), 'low');
 fname='mex_flicker\lpfilter.h';
 fid = fopen(fname, 'w');
-fprintf(fid,'// lowpass Butterworth \n');
-fprintf(fid,'const FloatType a_lp[]={ %1.17e,  %1.17e}; \n',a_lp(1), a_lp(2));
-fprintf(fid,'const FloatType b_lp[]={ %1.17e,  %1.17e}; \n',b_lp(1), b_lp(2));
-fprintf(fid,'FloatType z_lp; \n');
-fprintf(fid,'\n');
-fprintf(fid,'FloatType lp_filter(FloatType x) { \n');
-fprintf(fid,' // returns one filtered value and updates internal "delayed" values \n');
-fprintf(fid,'   FloatType y;\n');
-fprintf(fid,'   y	   =  b_lp[0] * x + z_lp;\n');
-fprintf(fid,'   z_lp   =  b_lp[1] * x - a_lp[1]*y;\n');
-fprintf(fid,'   return y; \n');
-fprintf(fid,'} \n\n');
+fprintf(fid,'// lowpass Butterworth filter for block 4 for %s\r\n',LAMPTYPE);
+fprintf(fid,'const FloatType a_lp[]={ %1.17e,  %1.17e}; \r\n',a_lp(1), a_lp(2));
+fprintf(fid,'const FloatType b_lp[]={ %1.17e,  %1.17e}; \r\n',b_lp(1), b_lp(2));
+fprintf(fid,'FloatType z_lp; \r\n');
+fprintf(fid,'\r\n');
+fprintf(fid,'FloatType lp_filter(FloatType x) { \r\n');
+fprintf(fid,' // returns one filtered value and updates internal "delayed" values \r\n');
+fprintf(fid,'   FloatType y;\r\n');
+fprintf(fid,'   y	   =  b_lp[0] * x + z_lp;\r\n');
+fprintf(fid,'   z_lp   =  b_lp[1] * x - a_lp[1]*y;\r\n');
+fprintf(fid,'   return y; \r\n');
+fprintf(fid,'} \r\n\r\n');
 fclose(fid);
 
 % %
@@ -296,7 +298,7 @@ for k=1:length(F_fl);
     clear mex_weighting_filterA;
     fprintf('%3.2f ',ffl);
 end;
-fprintf('\n ');
+fprintf('\r\n ');
 P_inst_max=ones(1,length(F_fl))*1.08;
 P_inst_min=ones(1,length(F_fl))*0.92;
 hf=figure;
@@ -308,7 +310,7 @@ grid;
 title(['Table 1b : test flickermeter response ' LAMPTYPE ' for sinusoidal voltage fluctuations']);
 xlabel('Modulation frequency, Hz');
 ylabel('P_{inst}');
-print(hf,'-dmeta','sinusoidal.emf')
+print(hf,'-dmeta','mex_flicker/sinusoidal.emf')
 
 % ---------------------------
 % rectangular modulation (table 2b)
@@ -366,7 +368,7 @@ for k=1:length(F_fl);
     clear mex_weighting_filterA;
     fprintf('%3.2f ',ffl);
 end;
-  fprintf('\n ');
+  fprintf('\r\n ');
 P_inst_max=ones(1,length(F_fl))*1.08;
 P_inst_min=ones(1,length(F_fl))*0.92;
 hf=figure;
@@ -378,7 +380,7 @@ grid;
 title(['Table 2b : test flickermeter response ' LAMPTYPE ' for rectangular voltage fluctuations']);
 xlabel('Modulation frequency, Hz');
 ylabel('P_{inst}');
-print(hf,'-dmeta','rectangular.emf')
+print(hf,'-dmeta','mex_flicker/rectangular.emf')
 % ---------------------------
 
 

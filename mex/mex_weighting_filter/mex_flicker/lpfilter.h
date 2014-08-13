@@ -1,4 +1,4 @@
-// lowpass Butterworth 
+// lowpass Butterworth filter for block 4 for 230v50hz
 const FloatType a_lp[]={ 1.00000000000000000e+00,  -9.97399218298034240e-01}; 
 const FloatType b_lp[]={ 1.30039085098287990e-03,  1.30039085098287990e-03}; 
 FloatType z_lp; 

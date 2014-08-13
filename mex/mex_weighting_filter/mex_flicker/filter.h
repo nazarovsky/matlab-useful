@@ -1,3 +1,4 @@
+// designed filter for block 3 for 230v50hz
 typedef float FloatType;
 const FloatType g1=9.99877296594326560e-01;const FloatType a11=-9.99754593188653010e-01;const FloatType a12=0.00000000000000000e+00;const FloatType b11=-1.00000000000000000e+00;const FloatType b12=0.00000000000000000e+00;
 FloatType z11=0.0;FloatType z12=0.0;
