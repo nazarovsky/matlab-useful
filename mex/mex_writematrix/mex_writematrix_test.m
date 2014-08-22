@@ -1,5 +1,5 @@
 clear all;clc;
 
 Z=[magic(5);magic(5)'];
-i=mex_WriteMatrix(Z,'magic.txt');
+mex_WriteMatrix('magic.txt',Z,'%10.10f',',');
 clear mex_WriteMatrix;

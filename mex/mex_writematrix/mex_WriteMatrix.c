@@ -6,17 +6,33 @@
 /* $Revision: 1.1.10.4 $ */
 
 #include "mex.h"
-#define FUNCNAME "mex_WriteMatrix"
+#define _WIN32
+
+/* for ctrl-c detection http://www.caam.rice.edu/~wy1/links/mex_ctrl_c_trick/ */
+#if defined (_WIN32)
+    #include <windows.h>
+#elif defined (__linux__)
+    #include <unistd.h>
+#endif
+
+#ifdef __cplusplus 
+    extern "C" bool utIsInterruptPending();
+#else
+    extern bool utIsInterruptPending();
+#endif
+
+
+
+#define FUNCNAME "MATLAB:mex_WriteMatrix:error"
+
+FILE* fd=NULL;
+
 
 /* write to file routine */
-void writemat(double *z, size_t n, size_t m, char *fname )
+void writemat(double *z, size_t n, size_t m, char *fname, char *fmt, char *dlm)
 {
    int i;
    int j;
-   FILE* fd=NULL;
-//   char  *string_to_write; /* write a row at a time */
-//   int row_char_len;
-
 
    fd = fopen(fname,"w+");
    if(fd == NULL)
@@ -25,15 +41,19 @@ void writemat(double *z, size_t n, size_t m, char *fname )
          exit;
    }
 
-//   string_to_write=(char *)mxCalloc(,sizeof(char));
-
    for (i=0; i<m; i++) {
       for (j=0; j<n; j++) {
          if (j<n-1) {
-           fprintf(fd,"%10.10f,",z[i+j*m]);	
+           fprintf(fd, fmt, z[i+j*m]);
+           fprintf(fd, dlm, z[i+j*m]);	
          } else {
-           fprintf(fd,"%10.10f",z[i+j*m]);	
+           fprintf(fd,fmt,z[i+j*m]);	
          } 
+ 
+          if (utIsInterruptPending()) {        /* check for a Ctrl-C event */
+            mexPrintf("Ctrl-C Detected.\n\n");
+            return;  
+          }
       }
       fprintf(fd,"\n");	       
    }
@@ -45,46 +65,70 @@ void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[])
 {
     double *inMatrix;                /* MxN input matrix */
-    bool out;                    /* output = true // todo: to return false in case of write error */ 
     size_t m;                    /* M = number of rows of matrix */
     size_t n;                    /* N = number of cols of matrix */
-    size_t fnamelen; /* filename string buffer length */
-    char  *fname;                    /* filename string */
     int    status;
+    size_t fnamelen; /* filename string buffer length     */
+    char  *fname;                    /* filename string   */
+
+    size_t fmtlen;   /* value format string buffer length */
+    char  *fmt;                    /* value format string */
+
+    size_t dlmlen;   /* delimiter string buffer length    */
+    char  *dlm;                    /* value format string */
 
     /* check for proper number of arguments */
-    if(nrhs!=2) {
-        mexErrMsgIdAndTxt(FUNCNAME,"Two input parameters required.");
+    if(nrhs!=4) {
+        mexErrMsgIdAndTxt(FUNCNAME,"Four input parameters required (filename, matrix, value format and separator).");
     }
-    if(nlhs!=1) {
-        mexErrMsgIdAndTxt(FUNCNAME,"One output required.");
-    }
-    
-    if( !mxIsDouble(prhs[0]) || 
-         mxIsComplex(prhs[0])) {
-        mexErrMsgIdAndTxt(FUNCNAME,"Input matrix Z must be type double.");
-    }
-    if(!mxIsChar(prhs[1])) {    
+
+    if(!mxIsChar(prhs[0])) {    
         mexErrMsgIdAndTxt(FUNCNAME,"Filename must be a string.");
     }
-    /* process first input = matrix */
-    inMatrix = mxGetPr(prhs[0]);
-    n = mxGetN(prhs[0]);
-    m = mxGetM(prhs[0]);
+    
+    if( !mxIsDouble(prhs[1]) || 
+         mxIsComplex(prhs[1])) {
+        mexErrMsgIdAndTxt(FUNCNAME,"Input matrix Z must be type double.");
+    }
 
-    /* process second input = filename */
-    fnamelen=mxGetN(prhs[1])+1;
+    if(!mxIsChar(prhs[2])) {    
+        mexErrMsgIdAndTxt(FUNCNAME,"Value format must be a string (e.g. %%10.6f)");
+    }
+
+//    if (!mxIsChar(prhs[3]) || mxGetN(prhs[3])>1) {    
+    if (!mxIsChar(prhs[3])) {    
+        mexErrMsgIdAndTxt(FUNCNAME,"Separator must be a char");
+    }
+
+
+    /* process first input = filename */
+    fnamelen=mxGetN(prhs[0])+1;
     fname=(char *)mxCalloc(fnamelen,sizeof(char));
-    status=mxGetString(prhs[1],fname,(mwSize)fnamelen);
+    status=mxGetString(prhs[0],fname,(mwSize)fnamelen);
 
-    /* create the output */
-    plhs[0] = mxCreateLogicalScalar(true);
+    /* process second input = matrix */
+    inMatrix = mxGetPr(prhs[1]);
+    n = mxGetN(prhs[1]);
+    m = mxGetM(prhs[1]);
 
-    /* get a pointer to the output */
-    out = mxGetPr(plhs[0]);
+    /* process third input = value format */
+    fmtlen=mxGetN(prhs[2])+1;
+    fmt=(char *)mxCalloc(fmtlen,sizeof(char));
+    status=mxGetString(prhs[2],fmt,(mwSize)fmtlen);
 
-    /* call the writemat routine */
-    writemat(inMatrix,n,m,fname);
+    /* process fourth input = delimiter */
+    dlmlen=mxGetN(prhs[3])+1;
+    dlm=(char *)mxCalloc(dlmlen,sizeof(char));
+    status=mxGetString(prhs[3],dlm,(mwSize)dlmlen);
+
+    writemat(inMatrix,n,m,fname, fmt, dlm);
 
     mxFree(fname);
+    mxFree(fmt);
+    mxFree(dlm);
+
+    if (fd!=NULL) {
+       fclose(fd);
+    }
+
 }
